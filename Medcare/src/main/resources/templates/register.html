@@ -75,7 +75,14 @@
         </div>
         <div class="mb-3">
             <label class="form-label"><i class="fa-solid fa-lock"></i> Mật khẩu</label>
-            <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)..." required>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)..." required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label"><i class="fa-solid fa-lock"></i> Nhập lại mật khẩu</label>
+            <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu..." required>
+            <div id="confirmError" style="color:#b91c1c; font-size:0.85rem; margin-top:6px; display:none;">
+                <i class="fa-solid fa-circle-exclamation"></i> Mật khẩu nhập lại không khớp!
+            </div>
         </div>
         <button type="submit" class="btn-auth">
             <i class="fa-solid fa-user-check"></i> Đăng ký tài khoản
@@ -87,5 +94,33 @@
         Đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a>
     </div>
 </div>
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const pw = document.getElementById('password').value;
+        const cpw = document.getElementById('confirmPassword').value;
+        const errEl = document.getElementById('confirmError');
+        const cpwInput = document.getElementById('confirmPassword');
+        if (pw !== cpw) {
+            e.preventDefault();
+            errEl.style.display = 'block';
+            cpwInput.style.borderColor = '#f87171';
+            cpwInput.focus();
+        } else {
+            errEl.style.display = 'none';
+            cpwInput.style.borderColor = '#e2e8f0';
+        }
+    });
+    document.getElementById('confirmPassword').addEventListener('input', function() {
+        const pw = document.getElementById('password').value;
+        const errEl = document.getElementById('confirmError');
+        if (this.value === pw) {
+            errEl.style.display = 'none';
+            this.style.borderColor = '#06d6a0';
+        } else if (this.value.length > 0) {
+            errEl.style.display = 'block';
+            this.style.borderColor = '#f87171';
+        }
+    });
+</script>
 </body>
 </html>

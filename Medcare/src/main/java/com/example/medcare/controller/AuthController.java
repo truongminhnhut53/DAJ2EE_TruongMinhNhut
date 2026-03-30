@@ -30,7 +30,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute User user) {
+    public String register(@ModelAttribute User user,
+                           @RequestParam("confirmPassword") String confirmPassword,
+                           Model model) {
+        if (!user.getPassword().equals(confirmPassword)) {
+            model.addAttribute("error", "Mật khẩu nhập lại không khớp!");
+            return "register";
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("ROLE_USER");
         repo.save(user);
