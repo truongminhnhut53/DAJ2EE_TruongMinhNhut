@@ -42,4 +42,40 @@ public class AuthController {
         repo.save(user);
         return "redirect:/login";
     }
+
+    @GetMapping("/forgot-password")
+    public String forgotPasswordForm() {
+        return "forgot-password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String forgotPassword(@RequestParam("username") String username,
+                                 @RequestParam("phone") String phone,
+                                 @RequestParam("newPassword") String newPassword,
+                                 @RequestParam("confirmNewPassword") String confirmNewPassword,
+                                 Model model) {
+        if (!newPassword.equals(confirmNewPassword)) {
+            model.addAttribute("error", "Mật khẩu mới nhập lại không khớp!");
+            model.addAttribute("enteredUsername", username);
+            model.addAttribute("enteredPhone", phone);
+            return "forgot-password";
+        }
+        if (newPassword.length() < 6) {
+            model.addAttribute("error", "Mật khẩu mới phải có ít nhất 6 ký tự!");
+            model.addAttribute("enteredUsername", username);
+            model.addAttribute("enteredPhone", phone);
+            return "forgot-password";
+        }
+        var userOpt = repo.findByUsernameAndPhone(username, phone);
+        if (userOpt.isEmpty()) {
+            model.addAttribute("error", "Không tìm thấy tài khoản với tên đăng nhập và số điện thoại này!");
+            model.addAttribute("enteredUsername", username);
+            model.addAttribute("enteredPhone", phone);
+            return "forgot-password";
+        }
+        User foundUser = userOpt.get();
+        foundUser.setPassword(passwordEncoder.encode(newPassword));
+        repo.save(foundUser);
+        return "redirect:/login?resetSuccess";
+    }
 }
