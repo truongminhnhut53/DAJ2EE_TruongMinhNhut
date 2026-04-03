@@ -142,6 +142,8 @@
         <a th:href="@{/admin/dashboard}" class="nav-item-custom active"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
         <a th:href="@{/admin/products}" class="nav-item-custom"><i class="fa-solid fa-boxes-stacked"></i> Sản phẩm</a>
         <a th:href="@{/admin/users}" class="nav-item-custom"><i class="fa-solid fa-users-gear"></i> Người dùng</a>
+        <!-- NEW TAB FOR MEDICAL RECORDS -->
+        <a th:href="@{/admin/prescriptions}" class="nav-item-custom"><i class="fa-solid fa-file-medical"></i> Hồ Sơ Y Tế</a>
         <div class="sidebar-label mt-3">Hệ thống</div>
         <a th:href="@{/}" class="nav-item-custom"><i class="fa-solid fa-house"></i> Trang chủ</a>
         <a th:href="@{/products}" class="nav-item-custom"><i class="fa-solid fa-store"></i> Cửa hàng</a>
@@ -249,6 +251,15 @@
                 <div class="qb-desc">Tạo mặt hàng mới</div>
             </div>
         </a>
+        <a th:href="@{/admin/prescriptions}" class="quick-btn">
+            <div class="qb-icon" style="background:linear-gradient(135deg, rgba(239,68,68,0.25), rgba(248,113,113,0.15))">
+                <i class="fa-solid fa-file-medical" style="color:#EF4444"></i>
+            </div>
+            <div>
+                <div class="qb-title">Hồ sơ y tế</div>
+                <div class="qb-desc">Duyệt & Tư vấn ngay</div>
+            </div>
+        </a>
     </div>
 
     <!-- ORDERS TABLE -->
@@ -283,9 +294,15 @@
                         <td th:text="${order.createdAt != null ? #temporals.format(order.createdAt,'dd/MM/yyyy HH:mm') : ''}"></td>
                         <td style="color:#D97706;font-weight:800" th:text="${#numbers.formatDecimal(order.total != null ? order.total : 0,0,'COMMA',0,'POINT')} + ' đ'"></td>
                         <td>
-                            <span th:if="${order.status == T(com.example.medcare.model.Order.OrderStatus).PENDING}" class="badge-pending"><i class="fa-solid fa-hourglass-half fa-xs"></i> Chờ xử lý</span>
-                            <span th:if="${order.status == T(com.example.medcare.model.Order.OrderStatus).SHIPPING}" class="badge-shipping"><i class="fa-solid fa-truck-fast fa-xs"></i> Đang giao</span>
-                            <span th:if="${order.status == T(com.example.medcare.model.Order.OrderStatus).DELIVERED}" class="badge-delivered"><i class="fa-solid fa-check-double fa-xs"></i> Đã giao</span>
+                            <form th:action="@{/admin/order/update-status/{id}(id=${order.id})}" method="post" style="margin:0;">
+                                <select name="status" onchange="this.form.submit()"
+                                        style="border-radius:10px; padding:6px 12px; font-size:0.8rem; font-weight:700; border:1px solid rgba(0,0,0,0.1); outline:none; cursor:pointer;"
+                                        th:classappend="${(order.status == null or order.status.name() == 'PENDING') ? 'badge-pending' : (order.status.name() == 'SHIPPING' ? 'badge-shipping' : 'badge-delivered')}">
+                                    <option value="PENDING" th:selected="${order.status == null or order.status.name() == 'PENDING'}">⌛ Chờ xử lý</option>
+                                    <option value="SHIPPING" th:selected="${order.status != null and order.status.name() == 'SHIPPING'}">🚚 Đang giao</option>
+                                    <option value="DELIVERED" th:selected="${order.status != null and order.status.name() == 'DELIVERED'}">✔️ Đã giao</option>
+                                </select>
+                            </form>
                         </td>
                         <td>
                             <div style="display:flex;gap:8px;justify-content:center">

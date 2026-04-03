@@ -35,9 +35,9 @@
         <p>
             <b>Trạng thái hiện tại:</b>
             <span class="badge"
-                  th:classappend="${order.status == T(com.example.medcare.model.Order.OrderStatus).DELIVERED} ? 'bg-success' :
-                                  (${order.status == T(com.example.medcare.model.Order.OrderStatus).SHIPPING} ? 'bg-primary' : 'bg-secondary')"
-                  th:text="${order.status}">
+                  th:classappend="${order.status != null and order.status.name() == 'DELIVERED'} ? 'bg-success' :
+                                  (${order.status != null and order.status.name() == 'SHIPPING'} ? 'bg-primary' : 'bg-warning text-dark')"
+                  th:text="${order.status != null ? order.status.name() : 'PENDING'}">
             </span>
         </p>
 
@@ -54,17 +54,17 @@
                     <select name="status" class="form-select">
 
                         <option value="PENDING"
-                                th:selected="${order.status == T(com.example.medcare.model.Order.OrderStatus).PENDING}">
+                                th:selected="${order.status == null or order.status.name() == 'PENDING'}">
                             Chờ xử lý
                         </option>
 
                         <option value="SHIPPING"
-                                th:selected="${order.status == T(com.example.medcare.model.Order.OrderStatus).SHIPPING}">
+                                th:selected="${order.status != null and order.status.name() == 'SHIPPING'}">
                             Đang giao
                         </option>
 
                         <option value="DELIVERED"
-                                th:selected="${order.status == T(com.example.medcare.model.Order.OrderStatus).DELIVERED}">
+                                th:selected="${order.status != null and order.status.name() == 'DELIVERED'}">
                             Đã giao
                         </option>
 

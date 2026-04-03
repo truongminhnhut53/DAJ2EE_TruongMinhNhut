@@ -19,6 +19,13 @@ public class HealthRecord {
     @Column(columnDefinition = "nvarchar(255)")
     private String status;
 
+    private Integer bloodPressureSys; // Huyết áp tâm thu
+    private Integer bloodPressureDia; // Huyết áp tâm trương
+    
+    @Column(length = 500)
+    @org.hibernate.annotations.Nationalized
+    private String notes; // Ghi chú
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -49,4 +56,13 @@ public class HealthRecord {
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
+
+    public Integer getBloodPressureSys() { return bloodPressureSys; }
+    public void setBloodPressureSys(Integer bloodPressureSys) { this.bloodPressureSys = bloodPressureSys; }
+
+    public Integer getBloodPressureDia() { return bloodPressureDia; }
+    public void setBloodPressureDia(Integer bloodPressureDia) { this.bloodPressureDia = bloodPressureDia; }
+
+    public String getNotes() { return notes; }
+    public void setNotes(String notes) { this.notes = notes; }
 }

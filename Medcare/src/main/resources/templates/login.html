@@ -53,9 +53,14 @@
         .divider::before, .divider::after { content:''; position: absolute; top: 50%; width: 40%; height: 1px; background: #e5e7eb; }
         .divider::before { left: 0; }
         .divider::after { right: 0; }
-        .link-register { text-align: center; margin-top: 18px; font-size: 0.9rem; color: #6c757d; }
         .link-register a { color: #0077b6; font-weight: 600; text-decoration: none; }
         .link-register a:hover { text-decoration: underline; }
+        .password-wrapper { position: relative; }
+        .toggle-password {
+            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; color: #9ca3af; font-size: 1.1rem;
+        }
+        .toggle-password:hover { color: #0077b6; }
     </style>
 </head>
 <body>
@@ -83,7 +88,10 @@
         </div>
         <div class="mb-3">
             <label class="form-label"><i class="fa-solid fa-lock"></i> Mật khẩu</label>
-            <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu..." required>
+            <div class="password-wrapper">
+                <input type="password" name="password" id="password" class="form-control" placeholder="Nhập mật khẩu..." required>
+                <i class="fa-regular fa-eye toggle-password" onclick="toggleVisibility('password', this)" title="Hiện mật khẩu"></i>
+            </div>
         </div>
         <div style="text-align:right;margin-top:-8px;margin-bottom:12px">
             <a th:href="@{/forgot-password}" style="color:#0077b6;font-size:0.85rem;font-weight:600;text-decoration:none">Quên mật khẩu?</a>
@@ -98,5 +106,22 @@
         Chưa có tài khoản? <a th:href="@{/register}">Đăng ký ngay</a>
     </div>
 </div>
+
+<script>
+    function toggleVisibility(inputId, icon) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+            icon.title = "Ẩn mật khẩu";
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+            icon.title = "Hiện mật khẩu";
+        }
+    }
+</script>
 </body>
 </html>

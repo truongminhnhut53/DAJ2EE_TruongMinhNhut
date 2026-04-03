@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cố vấn Sức Khoẻ – MedCare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --primary:#0077b6; --accent:#06d6a0; --dark:#03045e; }
+        body { font-family:'Be Vietnam Pro',sans-serif; background:#f0f9ff; color:#23272f; min-height:100vh; }
+
+        /* NAV - Same as dashboard */
+        .navbar-custom { background:rgba(3,4,94,0.95); backdrop-filter:blur(12px); padding:14px 0; position:sticky; top:0; z-index:1000; box-shadow:0 2px 20px rgba(0,0,0,0.25); }
+        .navbar-brand-custom { font-size:1.6rem; font-weight:800; color:#fff!important; text-decoration:none; display:flex; align-items:center; gap:8px; }
+        .navbar-brand-custom span { color:#00b4d8; }
+        .nav-link-custom { color:rgba(255,255,255,0.85)!important; font-weight:500; padding:8px 14px; border-radius:8px; transition:all 0.2s; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+        .nav-link-custom:hover { background:rgba(255,255,255,0.12); color:#fff!important; }
+        .nav-item-active { background:linear-gradient(135deg,#0077b6,#00b4d8); color:#fff!important; }
+
+        .page-header { background:linear-gradient(135deg,var(--dark),#0077b6); color:#fff; padding:40px 0 32px; }
+        
+        .card-custom { background:#fff; border-radius:20px; padding:24px; box-shadow:0 4px 24px rgba(0,119,182,0.06); border:1px solid #e8f4fd; transition:all 0.25s; }
+        
+        .insight-card { border-left: 6px solid #10b981; }
+        .insight-card.danger { border-left-color: #ef4444; background: #fef2f2; }
+        .insight-card.warning { border-left-color: #f59e0b; background: #fffbeb; }
+        .insight-card.info { border-left-color: #3b82f6; background: #eff6ff; }
+        .insight-title { font-size:1.4rem; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
+        .insight-text { font-size:1.05rem; line-height:1.6; color:#374151; font-weight: 500;}
+
+        /* DELTA BADGES */
+        .delta-badge { display:inline-flex; align-items:center; gap:6px; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.95rem; }
+        .delta-up { background: #fee2e2; color: #dc2626; }
+        .delta-down { background: #d1fae5; color: #059669; }
+        .delta-neutral { background: #f1f5f9; color: #475569; }
+
+        .product-card { border:1.5px solid #e2e8f0; border-radius: 16px; overflow:hidden; transition:all 0.2s; background:#fff; height:100%; display:flex; flex-direction:column; }
+        .product-card:hover { border-color:#00b4d8; box-shadow:0 10px 30px rgba(0,180,216,0.15); transform:translateY(-5px); }
+        .product-img { width:100%; height:160px; object-fit:contain; padding:10px; background:#f8fafc; }
+        .product-body { padding:16px; flex-grow:1; display:flex; flex-direction:column; }
+        .product-title { font-size:1.05rem; font-weight:700; color:#1e293b; margin-bottom:8px; line-height:1.4; }
+        .product-price { color:#ef4444; font-weight:800; font-size:1.15rem; margin-top:auto; }
+
+        .form-control { border-radius:12px; border:1.5px solid #e2e8f0; padding:12px 16px; background:#fafafa;}
+        .form-control:focus { background:#fff; border-color:#00b4d8; box-shadow:0 0 0 3px rgba(0,180,216,0.15); }
+        .btn-submit { background:linear-gradient(135deg,#0077b6,#00b4d8); color:#fff; border:none; border-radius:12px; padding:12px; font-weight:700; width:100%; transition:all 0.2s; box-shadow:0 6px 20px rgba(0,119,182,0.3); margin-top:10px; }
+        .btn-submit:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,119,182,0.4); }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar-custom">
+    <div class="container d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <a class="navbar-brand-custom" th:href="@{/}"><i class="fa-solid fa-heart-pulse"></i> Med<span>Care</span></a>
+        <div class="d-flex align-items-center flex-wrap gap-2">
+            <a th:href="@{/}" class="nav-link-custom"><i class="fa-solid fa-house"></i> Trang chủ</a>
+            <a th:href="@{/dashboard}" class="nav-link-custom"><i class="fa-solid fa-chart-line"></i> Sức khoẻ cơ bản</a>
+            <a th:href="@{/my-health}" class="nav-link-custom nav-item-active"><i class="fa-solid fa-robot"></i> Cố vấn Sức khoẻ</a>
+            <a th:href="@{/products}" class="nav-link-custom"><i class="fa-solid fa-capsules"></i> Thực phẩm</a>
+        </div>
+    </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="container text-center">
+        <h1><i class="fa-solid fa-stethoscope"></i> Cố vấn Sức khoẻ Thông minh</h1>
+        <p style="opacity:0.9; font-size:1.1rem; max-width:600px; margin: 10px auto 0;">Phân tích tiến độ hàng tuần và đưa ra Phương án cùng Đơn Thuốc điện tử theo chuẩn Y Khoa giúp bạn khỏe hơn mỗi ngày.</p>
+    </div>
+</div>
+
+<div class="container py-5">
+
+    <div th:if="${uploadSuccess}" class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius:14px; border:none; background: linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:600; box-shadow: 0 10px 20px rgba(16,185,129,0.3); margin-bottom: 30px;">
+        <i class="fa-solid fa-robot" style="margin-right:8px; font-size:1.1rem;"></i> <span th:text="${uploadSuccess}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="filter: invert(1) grayscale(100%) brightness(200%);"></button>
+    </div>
+
+    <div class="row g-4 mb-5">
+        
+        <!-- SMART INSIGHTS -->
+        <div class="col-lg-12">
+            <div th:class="'card-custom insight-card ' + ${insightColor}">
+                <div class="insight-title" style="display: block;">
+                    <i th:class="${insightColor == 'danger' ? 'fa-solid fa-triangle-exclamation text-danger' : 
+                                 (insightColor == 'warning' ? 'fa-solid fa-bell text-warning' : 
+                                 (insightColor == 'info' ? 'fa-solid fa-circle-info text-info' : 'fa-solid fa-circle-check text-success'))}" style="margin-right: 8px;"></i>
+                    Khuyến Cáo Dành Riêng Cho Bạn: <br><span th:text="${insightTitle}" style="color: var(--dark); font-size: 1.5rem; display: inline-block; margin-top: 6px;"></span>
+                </div>
+                <div class="insight-text" th:text="${actionPlan}"></div>
+                
+                <hr style="opacity: 0.15; margin: 24px 0;">
+
+                <h5 style="font-weight: 800; color:#03045e; margin-bottom: 20px;"><i class="fa-solid fa-pills"></i> Gợi ý Toa Thuốc & Bổ sung Chất (Medcare Store):</h5>
+                
+                <div class="row g-3">
+                    <div class="col-md-6 col-12" th:each="p : ${recommendedProducts}">
+                        <div class="product-card" style="flex-direction: row; height: auto; align-items: stretch;">
+                            <!-- Only show image if URL exists, else placeholder -->
+                            <img th:src="${p.imageUrl != null and !p.imageUrl.isEmpty() ? p.imageUrl : '/images/placeholder.webp'}" alt="Medcare Product" style="width: 110px; height: auto; object-fit: contain; padding: 10px; flex-shrink: 0; background: #f8fafc; border-right: 1.5px solid #e2e8f0;">
+                            <div class="product-body" style="padding: 14px; display: flex; flex-direction: column; justify-content: center; text-align: left;">
+                                <div class="product-title" th:text="${p.name}" style="font-size: 0.95rem; margin-bottom: 4px;">Tên sản phẩm</div>
+                                <div class="product-price" th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'" style="font-size: 1.1rem; margin-top: 0; margin-bottom: 8px;"></div>
+                                <a th:href="@{/cart/add/{id}(id=${p.id})}" class="btn btn-sm" style="background:var(--primary); color:#fff; font-weight:700; border-radius:8px; width: fit-content; padding: 5px 14px; font-size: 0.85rem;">
+                                    <i class="fa-solid fa-cart-plus"></i> Chọn Mua
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${recommendedProducts.isEmpty()}" class="col-12 text-muted">Hệ thống chưa tìm thấy sản phẩm phù hợp.</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- DELTA PROGRESS -->
+        <div class="col-lg-4">
+            <div class="card-custom h-100">
+                <h5 style="font-weight:800;color:#03045e;margin-bottom:24px"><i class="fa-solid fa-arrow-trend-up"></i> Báo cáo So sánh Hàng Tuần</h5>
+                
+                <div style="background:#f8fafc; border-radius:14px; padding:20px; margin-bottom:16px;">
+                    <div style="color:#64748b; font-size:0.9rem; font-weight:600; text-transform:uppercase; margin-bottom:8px;">Cân Nặng Biến Thiên</div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span style="font-size:1.8rem; font-weight:900; color:#0f172a;" th:text="${latest != null ? latest.weight + ' kg' : '--'}">--</span>
+                        <div class="delta-badge" th:classappend="${deltaWeightValue > 0 ? 'delta-up' : (deltaWeightValue < 0 ? 'delta-down' : 'delta-neutral')}">
+                            <i th:class="${deltaWeightValue > 0 ? 'fa-solid fa-arrow-up' : (deltaWeightValue < 0 ? 'fa-solid fa-arrow-down' : 'fa-solid fa-minus')}"></i>
+                            <span th:text="${deltaWeightMsg}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background:#f8fafc; border-radius:14px; padding:20px;">
+                    <div style="color:#64748b; font-size:0.9rem; font-weight:600; text-transform:uppercase; margin-bottom:8px;">Huyết Áp Tâm Thu (Tối đa)</div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span style="font-size:1.8rem; font-weight:900; color:#0f172a;" th:text="${latest != null && latest.bloodPressureSys != null ? latest.bloodPressureSys : '--'}">--</span>
+                        <div class="delta-badge" th:classappend="${deltaBPMsg.contains('Tăng') ? 'delta-up' : (deltaBPMsg.contains('Giảm') ? 'delta-down' : 'delta-neutral')}">
+                            <i class="fa-solid fa-heart-pulse"></i>
+                            <span th:text="${deltaBPMsg}"></span>
+                        </div>
+                    </div>
+                    <div style="font-size:0.8rem; color:#64748b; margin-top:8px;">* So với lần ghi đo ngay trước đó. Mức lý tưởng là < 120.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- TARGET GOAL CARD -->
+            <div class="card-custom h-100">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 style="font-weight:800;color:#03045e;margin:0;"><i class="fa-solid fa-bullseye"></i> Mục Tiêu Cân Nặng</h5>
+                    <span class="badge" style="background:#e0f2fe; color:#0284c7; font-weight:700; padding:6px 12px; border-radius:20px;"><i class="fa-solid fa-robot"></i> AI Tự Động</span>
+                </div>
+
+                <div th:if="${aiGoalActive}">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span style="font-size:0.95rem; font-weight:800;" th:classappend="${aiGoalColor}"><i th:class="${aiGoalIcon}"></i> <span th:text="${aiGoalTitle}"></span></span>
+                        <span th:text="${aiGoalProgress} + '/100 Điểm'" style="font-size:0.95rem; font-weight:800; color:#059669;">%</span>
+                    </div>
+                    <div class="progress" style="height: 12px; border-radius: 10px; background-color: #f1f5f9;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
+                             th:style="'width: ' + ${aiGoalProgress} + '%; background: linear-gradient(90deg, #10b981, #06d6a0);'" 
+                             th:aria-valuenow="${aiGoalProgress}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div style="font-size:0.85rem; color:#64748b; margin-top:12px; text-align:center;">
+                        Mục tiêu mốc 100 điểm (BMI 22.0): <strong style="color:#0f172a;" th:text="${idealWeight} + ' kg'">--</strong> 
+                        (Cách <span th:text="${weightDiff} + ' kg'">--</span>)
+                    </div>
+                    <div style="margin-top: 15px; padding: 12px 14px; background: #e0f2fe; border-radius: 10px; border: 1px dashed #bae6fd;">
+                        <span style="font-size:0.88rem; font-weight:600; color:#0369a1; line-height: 1.5; display: inline-block;" th:text="${aiGoalAdvice}"></span>
+                    </div>
+                </div>
+
+                <div th:if="${!aiGoalActive}" class="text-center py-3">
+                    <i class="fa-solid fa-scale-unbalanced" style="font-size:2rem; color:#cbd5e0; margin-bottom:10px;"></i>
+                    <p style="font-size:0.9rem; color:#64748b; margin:0;">Hệ thống đang chờ bạn cập nhật thông tin Chiều cao & Cân nặng ở bảng bên dưới để AI chẩn đoán lộ trình!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- MEDICATION REMINDER CARD -->
+            <div class="card-custom h-100">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 style="font-weight:800;color:#03045e;margin:0;"><i class="fa-solid fa-clock"></i> Lịch Uống Thuốc</h5>
+                    <button class="btn btn-sm" style="background:#fef3c7; color:#d97706; font-weight:700; border-radius:8px;" data-bs-toggle="modal" data-bs-target="#reminderModal">
+                        <i class="fa-solid fa-plus"></i> Thêm lịch
+                    </button>
+                </div>
+
+                <div th:if="${reminders != null and !reminders.isEmpty()}">
+                    <div th:each="r : ${reminders}" class="p-3 mb-2" style="background:#f8fafc; border-radius:12px; border-left:4px solid #f59e0b;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div style="font-weight:700; color:#1e293b; font-size:1.05rem;" th:text="${r.medicationName}">Vitamin C</div>
+                                <div style="font-size:0.85rem; color:#64748b; margin-top:2px;">
+                                    <i class="fa-regular fa-calendar" th:if="${r.durationDays != null}"></i>
+                                    <span th:text="${r.durationDays != null ? 'Trong ' + r.durationDays + ' ngày' : 'Uống liên tục'}"></span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <span style="font-size:1.4rem; font-weight:900; color:#d97706;" th:text="${r.reminderTime}">08:00</span>
+                                <div style="font-size:0.75rem; font-weight:700; color:#10b981;" th:if="${r.isActive}"><i class="fa-solid fa-bell"></i> Đang bật</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${reminders == null or reminders.isEmpty()}" class="text-center py-3">
+                    <i class="fa-solid fa-bell-slash" style="font-size:2rem; color:#cbd5e0; margin-bottom:14px;"></i>
+                    <p style="font-size:0.95rem; color:#475569; font-weight: 600; font-style: italic; background:#f1f5f9; padding: 12px; border-radius: 12px;" th:text="${reminderEmptyQuote}">Chưa thiết lập nhắc nhở.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ADVANCED MEASUREMENT FORM -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card-custom">
+                <h5 style="font-weight:800;color:#03045e;margin-bottom:20px; text-align:center;"><i class="fa-solid fa-user-doctor"></i> Cập Nhật Chỉ Số Chuyên Sâu Hội Chẩn</h5>
+                <form th:action="@{/save}" method="post">
+                    <!-- Advanced inputs that also trigger basic dashboard save -->
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <label class="form-label" style="font-weight:700;"><i class="fa-solid fa-ruler-vertical"></i> Chiều cao (cm)</label>
+                            <input type="number" step="0.1" class="form-control" name="height" placeholder="170.5" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" style="font-weight:700;"><i class="fa-solid fa-weight-scale"></i> Cân nặng (kg)</label>
+                            <input type="number" step="0.1" class="form-control" name="weight" placeholder="65.5" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" style="font-weight:700; color:#dc2626;"><i class="fa-solid fa-heart-pulse"></i> Huyết Áp Tâm Thu (Mới)</label>
+                            <input type="number" step="1" class="form-control" name="bloodPressureSys" placeholder="Tối đa (vd: 120)">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" style="font-weight:700; color:#3b82f6;"><i class="fa-solid fa-heart-pulse"></i> Huyết Áp Tâm Trương</label>
+                            <input type="number" step="1" class="form-control" name="bloodPressureDia" placeholder="Tối thiểu (vd: 80)">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label" style="font-weight:700;"><i class="fa-solid fa-notes-medical"></i> Ghi chú Triệu Chứng (Toa thuốc, Cảm giác mệt mỏi...)</label>
+                            <textarea class="form-control" name="notes" rows="3" placeholder="Ví dụ: Hôm nay tôi thấy hơi chóng mặt lúc sáng sớm..."></textarea>
+                        </div>
+                        
+                        <!-- Hidden inputs for backward compatibility with basic save logic -->
+                        <input type="hidden" name="heartRate" value="80">
+                        <input type="hidden" name="redirectUrl" value="/my-health">
+
+                        <div class="col-md-4 offset-md-4 mt-4">
+                            <button type="submit" class="btn-submit" style="font-size: 1.1rem; padding: 14px;">
+                                <i class="fa-solid fa-robot"></i> Gửi Tiến Trình Cho AI Phân Tích
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRESCRIPTIONS / MEDICAL RECORDS SECTION -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h4 style="font-weight:800;color:#03045e;margin:0;"><i class="fa-solid fa-file-medical"></i> Hồ Sơ Y Tế & Upload Đơn Thuốc</h4>
+                <button class="btn btn-primary" style="background:var(--primary); font-weight:700; border-radius:10px;" data-bs-toggle="modal" data-bs-target="#prescriptionModal">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Tải Đơn Thuốc Lên
+                </button>
+            </div>
+
+            <div class="row g-4">
+                <!-- If no prescriptions -->
+                <div class="col-12" th:if="${prescriptions == null or prescriptions.isEmpty()}">
+                    <div class="card-custom text-center py-5">
+                        <i class="fa-solid fa-folder-open" style="font-size:3rem; color:#cbd5e0; margin-bottom:16px;"></i>
+                        <h5 style="color:#475569; font-weight:700;">Chưa có Hồ Sơ nào</h5>
+                        <p style="color:#64748b; margin:0;">Hãy tải lên đơn thuốc của bạn (kết quả xét nghiệm, toa bác sĩ) để Chuyên gia Medcare xem xét và tư vấn cấp phát thuốc online.</p>
+                    </div>
+                </div>
+
+                <!-- Loop through prescriptions -->
+                <div class="col-md-6" th:each="p : ${prescriptions}">
+                    <div class="card-custom">
+                        <div class="d-flex align-items-start gap-3">
+                            <div style="flex-shrink:0;">
+                                <!-- Image Preview or Placeholder -->
+                                <img th:src="${(p.imageUrl == null or p.imageUrl.trim().isEmpty()) ? '/images/placeholder.webp' : p.imageUrl}" 
+                                     style="width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 1px solid #e2e8f0;" alt="Prescription">
+                            </div>
+                            <div style="flex-grow:1;">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span style="font-size:0.85rem; color:#64748b; font-weight:600;"><i class="fa-regular fa-clock"></i> <span th:text="${#temporals.format(p.uploadedAt, 'dd/MM/yyyy HH:mm')}"></span></span>
+                                    <div>
+                                        <span class="badge" 
+                                              th:classappend="${p.status == 'CHỜ DUYỆT' ? 'bg-warning text-dark' : (p.status == 'ĐÃ TƯ VẤN' ? 'bg-info' : 'bg-success')}"
+                                              th:text="${p.status}">Chờ duyệt</span>
+                                        <form th:action="@{/my-health/prescription/delete/{id}(id=${p.id})}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn thuốc/hồ sơ này không?');">
+                                            <button type="submit" class="btn btn-sm btn-link text-danger p-0 ms-2" style="text-decoration:none;" title="Xóa">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <h6 style="font-weight:700; color:#0f172a; margin-bottom:6px;">Ghi chú tình trạng:</h6>
+                                <p style="font-size:0.95rem; color:#475569; margin:0;" th:text="${p.notes != null and !p.notes.isEmpty() ? p.notes : 'Khách hàng không để lại ghi chú.'}"></p>
+
+                                <!-- Admin Reply Section -->
+                                <div th:if="${p.adminReply != null and !p.adminReply.isEmpty()}" style="margin-top:12px; padding:10px; background:rgba(16,185,129,0.08); border-radius:10px; border:1px solid rgba(16,185,129,0.2);">
+                                    <span style="font-size:0.8rem; font-weight:700; color:#059669; display:block; margin-bottom:4px;"><i class="fa-solid fa-user-doctor"></i> BÁC SĨ CHUYÊN MÔN TƯ VẤN:</span>
+                                    <p style="font-size:0.9rem; color:#064e3b; margin:0; line-height:1.5;" th:text="${p.adminReply}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- PRESCRIPTION UPLOAD MODAL -->
+<div class="modal fade" id="prescriptionModal" tabindex="-1" aria-labelledby="prescriptionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius: 16px; border:none; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+      <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px;">
+        <h5 class="modal-title" id="prescriptionModalLabel" style="font-weight: 800; color:var(--dark);"><i class="fa-solid fa-cloud-arrow-up"></i> Tải Lên Hồ Sơ Bệnh Án / Đơn Thuốc</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form th:action="@{/my-health/prescription}" method="post" enctype="multipart/form-data">
+          <div class="modal-body" style="padding: 24px;">
+            <div class="row g-4">
+                <div class="col-12">
+                    <label class="form-label" style="font-weight:700;"><i class="fa-solid fa-image"></i> Hình ảnh Đơn thuốc / Bệnh án</label>
+                    <p style="font-size:0.85rem; color:#64748b; margin-bottom:8px;">Bạn có thể tải ảnh chụp trực tiếp từ máy (Định dạng ảnh: JPG, PNG...)</p>
+                    <input type="file" class="form-control" name="imageFile" accept="image/*">
+                    <div class="mt-2 text-center text-muted" style="font-size: 0.8rem;">--- HOẶC ---</div>
+                    <label class="form-label mt-2" style="font-weight:600; font-size:0.9rem;"><i class="fa-solid fa-link"></i> Dán đường dẫn URL nếu ảnh trên mạn</label>
+                    <input type="url" class="form-control" name="imageUrl" placeholder="Nhập đường dẫn http://...">
+                </div>
+                <div class="col-12">
+                    <label class="form-label" style="font-weight:700;"><i class="fa-solid fa-pen-to-square"></i> Ghi chú Triệu Chứng / Lời nhắn cho Chuyên Gia</label>
+                    <textarea class="form-control" name="notes" rows="4" placeholder="Ví dụ: Bác sĩ cho em đơn này nhưng em không rõ nên uống loại TPCN nào thay thế..." required></textarea>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer" style="border-top: none; padding: 0 24px 24px;">
+            <button type="button" class="btn btn-light" style="font-weight: 600; border-radius: 10px;" data-bs-dismiss="modal">Hủy</button>
+            <button type="submit" class="btn btn-primary" style="background:var(--primary); font-weight: 700; border:none; border-radius: 10px; padding: 8px 24px;"><i class="fa-solid fa-paper-plane"></i> Gửi Chuyên Gia</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- REMINDER MODAL -->
+<div class="modal fade" id="reminderModal" tabindex="-1" aria-labelledby="reminderModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px; border:none; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+      <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px 24px;">
+        <h5 class="modal-title" id="reminderModalLabel" style="font-weight: 800; color:var(--dark);"><i class="fa-solid fa-clock"></i> Hẹn Giờ Uống Thuốc</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form th:action="@{/my-health/reminder}" method="post">
+          <div class="modal-body" style="padding: 24px;">
+            <div class="mb-3">
+                <label class="form-label" style="font-weight:700;">Tên thuốc / Bổ sung chất</label>
+                <input type="text" class="form-control" name="medicationName" placeholder="Ví dụ: Dầu cá Omega-3" required>
+            </div>
+            <div class="row g-3">
+                <div class="col-6">
+                    <label class="form-label" style="font-weight:700;">Giờ uống</label>
+                    <input type="time" class="form-control" name="reminderTime" required>
+                </div>
+                <div class="col-6">
+                    <label class="form-label" style="font-weight:700;">Số ngày uống</label>
+                    <input type="number" class="form-control" name="durationDays" placeholder="Bỏ trống, nếu uống lâu dài">
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer" style="border-top: none; padding: 0 24px 24px;">
+            <button type="button" class="btn btn-light" style="font-weight: 600; border-radius: 10px;" data-bs-dismiss="modal">Hủy</button>
+            <button type="submit" class="btn btn-warning" style="font-weight: 700; border:none; border-radius: 10px; padding: 8px 24px;">Lưu Nhắc Nhở</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer class="footer text-center" style="background:var(--dark); color:rgba(255,255,255,0.7); padding:30px 0; margin-top:60px;">
+    <p>© 2026 <strong style="color:#00b4d8">MedCare</strong> – Chăm sóc sức khoẻ toàn diện</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

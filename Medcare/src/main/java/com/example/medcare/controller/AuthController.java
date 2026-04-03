@@ -37,6 +37,22 @@ public class AuthController {
             model.addAttribute("error", "Mật khẩu nhập lại không khớp!");
             return "register";
         }
+        
+        if (repo.existsByUsername(user.getUsername())) {
+            model.addAttribute("error", "Tên đăng nhập này đã tồn tại!");
+            return "register";
+        }
+        
+        if (user.getEmail() != null && !user.getEmail().isEmpty() && repo.existsByEmail(user.getEmail())) {
+            model.addAttribute("error", "Email này đã được đăng ký cho tài khoản khác!");
+            return "register";
+        }
+        
+        if (user.getPhone() != null && !user.getPhone().isEmpty() && repo.existsByPhone(user.getPhone())) {
+            model.addAttribute("error", "Số điện thoại này đã được đăng ký!");
+            return "register";
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("ROLE_USER");
         repo.save(user);

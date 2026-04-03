@@ -54,6 +54,12 @@
         .link-login { text-align: center; margin-top: 18px; font-size: 0.9rem; color: #6c757d; }
         .link-login a { color: #059669; font-weight: 600; text-decoration: none; }
         .link-login a:hover { text-decoration: underline; }
+        .password-wrapper { position: relative; }
+        .toggle-password {
+            position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; color: #9ca3af; font-size: 1.1rem;
+        }
+        .toggle-password:hover { color: #059669; }
     </style>
 </head>
 <body>
@@ -74,12 +80,26 @@
             <input type="text" name="username" class="form-control" placeholder="Nhập tên đăng nhập..." required>
         </div>
         <div class="mb-3">
+            <label class="form-label"><i class="fa-solid fa-envelope"></i> Email (Gmail)</label>
+            <input type="email" name="email" class="form-control" placeholder="Nhập địa chỉ email..." required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label"><i class="fa-solid fa-phone"></i> Số điện thoại</label>
+            <input type="text" name="phone" class="form-control" placeholder="Nhập số điện thoại..." required>
+        </div>
+        <div class="mb-3">
             <label class="form-label"><i class="fa-solid fa-lock"></i> Mật khẩu</label>
-            <input type="password" name="password" id="password" class="form-control" placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)..." required>
+            <div class="password-wrapper">
+                <input type="password" name="password" id="password" class="form-control" placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)..." required>
+                <i class="fa-regular fa-eye toggle-password" onclick="toggleVisibility('password', this)" title="Hiện mật khẩu"></i>
+            </div>
         </div>
         <div class="mb-3">
             <label class="form-label"><i class="fa-solid fa-lock"></i> Nhập lại mật khẩu</label>
-            <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu..." required>
+            <div class="password-wrapper">
+                <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu..." required>
+                <i class="fa-regular fa-eye toggle-password" onclick="toggleVisibility('confirmPassword', this)" title="Hiện mật khẩu"></i>
+            </div>
             <div id="confirmError" style="color:#b91c1c; font-size:0.85rem; margin-top:6px; display:none;">
                 <i class="fa-solid fa-circle-exclamation"></i> Mật khẩu nhập lại không khớp!
             </div>
@@ -121,6 +141,21 @@
             this.style.borderColor = '#f87171';
         }
     });
+
+    function toggleVisibility(inputId, icon) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+            icon.title = "Ẩn mật khẩu";
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+            icon.title = "Hiện mật khẩu";
+        }
+    }
 </script>
 </body>
 </html>

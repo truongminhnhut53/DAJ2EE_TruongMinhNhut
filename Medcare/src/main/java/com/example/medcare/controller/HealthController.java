@@ -29,6 +29,7 @@ public class HealthController {
     // ================= SAVE =================
     @PostMapping("/save")
     public String save(@ModelAttribute HealthRecord record,
+                       @RequestParam(value = "redirectUrl", required = false) String redirectUrl,
                        Principal principal) {
 
         double bmi = record.getWeight() /
@@ -45,6 +46,10 @@ public class HealthController {
         record.setUser(user);
 
         repo.save(record);
+
+        if (redirectUrl != null && !redirectUrl.isEmpty()) {
+            return "redirect:" + redirectUrl;
+        }
 
         return "redirect:/dashboard";
     }

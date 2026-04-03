@@ -67,12 +67,18 @@ public class AdminOrderController {
     @PostMapping("/admin/order/update-status/{id}")
     @Transactional
     public String updateStatus(@PathVariable Long id,
-                               @RequestParam String status) {
+                               @RequestParam String status,
+                               jakarta.servlet.http.HttpServletRequest request) {
 
         Order order = orderRepository.findById(id)
                 .orElseThrow();
 
         order.setStatus(Order.OrderStatus.valueOf(status));
+
+        String referer = request.getHeader("Referer");
+        if (referer != null && referer.contains("/admin/dashboard")) {
+            return "redirect:/admin/dashboard";
+        }
 
         return "redirect:/admin/order/" + id;
     }

@@ -84,6 +84,7 @@
         <div class="d-flex align-items-center flex-wrap gap-2">
             <a th:href="@{/}" class="nav-link-custom"><i class="fa-solid fa-house"></i> Trang chủ</a>
             <a th:href="@{/dashboard}" class="nav-link-custom nav-item-active"><i class="fa-solid fa-chart-line"></i> Sức khoẻ</a>
+            <a th:href="@{/my-health}" class="nav-link-custom"><i class="fa-solid fa-robot"></i> Cố vấn</a>
             <a th:href="@{/products}" class="nav-link-custom"><i class="fa-solid fa-capsules"></i> Thực phẩm</a>
             <div sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{/admin/dashboard}" class="nav-link-custom" style="color:#f87171!important"><i class="fa-solid fa-gauge-high"></i> Admin</a>
