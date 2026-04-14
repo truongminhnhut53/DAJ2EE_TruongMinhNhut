@@ -75,7 +75,17 @@
                             <td><img th:src="@{${item.product.imageUrl}}" class="product-img-sm" alt="img" onerror="this.onerror=null;this.src='https://placehold.co/400x400/e2e8f0/64748b?text=Product';"></td>
                             <td class="product-name-cell" th:text="${item.product.name}"></td>
                             <td class="text-center price-cell" th:text="${#numbers.formatDecimal(item.product.price,0,'COMMA',0,'POINT')} + ' đ'"></td>
-                            <td class="text-center"><span class="qty-badge" th:text="${item.quantity}"></span></td>
+                            <td class="text-center">
+                                <div class="d-flex align-items-center justify-content-center gap-1">
+                                    <form th:action="@{/cart/decrease/{id}(id=${item.product.id})}" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm" style="width:32px;height:32px;border-radius:8px;background:#fee2e2;color:#ef4444;font-weight:800;border:1.5px solid #fca5a5;padding:0;line-height:1;">−</button>
+                                    </form>
+                                    <span class="qty-badge" th:text="${item.quantity}" style="min-width:38px;text-align:center;"></span>
+                                    <form th:action="@{/cart/increase/{id}(id=${item.product.id})}" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm" style="width:32px;height:32px;border-radius:8px;background:#dcfce7;color:#16a34a;font-weight:800;border:1.5px solid #86efac;padding:0;line-height:1;">+</button>
+                                    </form>
+                                </div>
+                            </td>
                             <td class="text-center total-cell" th:text="${#numbers.formatDecimal(item.product.price * item.quantity,0,'COMMA',0,'POINT')} + ' đ'"></td>
                             <td class="text-center">
                                 <a th:href="@{/cart/remove/{id}(id=${item.product.id})}" class="btn-remove"><i class="fa-solid fa-xmark"></i></a>

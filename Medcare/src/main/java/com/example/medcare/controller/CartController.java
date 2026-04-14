@@ -69,6 +69,42 @@ public class CartController {
     }
 
     /* ===============================
+       INCREASE QUANTITY
+    =============================== */
+    @PostMapping("/increase/{id}")
+    public String increaseQuantity(@PathVariable Long id, Principal principal) {
+        User user = getCurrentUser(principal);
+        Product product = productRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        CartItem item = cartRepo.findByUserAndProduct(user, product);
+        if (item != null) {
+            item.setQuantity(item.getQuantity() + 1);
+            cartRepo.save(item);
+        }
+        return "redirect:/cart";
+    }
+
+    /* ===============================
+       DECREASE QUANTITY
+    =============================== */
+    @PostMapping("/decrease/{id}")
+    public String decreaseQuantity(@PathVariable Long id, Principal principal) {
+        User user = getCurrentUser(principal);
+        Product product = productRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        CartItem item = cartRepo.findByUserAndProduct(user, product);
+        if (item != null) {
+            if (item.getQuantity() > 1) {
+                item.setQuantity(item.getQuantity() - 1);
+                cartRepo.save(item);
+            } else {
+                cartRepo.deleteByUserIdAndProductId(user.getId(), id);
+            }
+        }
+        return "redirect:/cart";
+    }
+
+    /* ===============================
        REMOVE ITEM
     =============================== */
     @GetMapping("/remove/{id}")

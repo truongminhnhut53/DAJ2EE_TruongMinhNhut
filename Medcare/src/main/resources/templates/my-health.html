@@ -105,9 +105,11 @@
                             <div class="product-body" style="padding: 14px; display: flex; flex-direction: column; justify-content: center; text-align: left;">
                                 <div class="product-title" th:text="${p.name}" style="font-size: 0.95rem; margin-bottom: 4px;">Tên sản phẩm</div>
                                 <div class="product-price" th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'" style="font-size: 1.1rem; margin-top: 0; margin-bottom: 8px;"></div>
-                                <a th:href="@{/cart/add/{id}(id=${p.id})}" class="btn btn-sm" style="background:var(--primary); color:#fff; font-weight:700; border-radius:8px; width: fit-content; padding: 5px 14px; font-size: 0.85rem;">
-                                    <i class="fa-solid fa-cart-plus"></i> Chọn Mua
-                                </a>
+                                <form th:action="@{/cart/add/{id}(id=${p.id})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm" style="background:var(--primary); color:#fff; font-weight:700; border-radius:8px; width: fit-content; padding: 5px 14px; font-size: 0.85rem;">
+                                        <i class="fa-solid fa-cart-plus"></i> Chọn Mua
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>

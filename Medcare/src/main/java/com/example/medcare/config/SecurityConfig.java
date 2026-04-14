@@ -50,7 +50,8 @@ public class SecurityConfig {
                                 "/forgot-password",
                                 "/css/**",
                                 "/images/**",
-                                "/cart/**"
+                                "/cart/**",
+                                "/products"
                         ).permitAll()
 
                         .requestMatchers("/admin/**")
