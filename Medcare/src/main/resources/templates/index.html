@@ -21,7 +21,27 @@
             --card-bg: #ffffff;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--bg); color: var(--text); }
+        body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeInLeft { from { opacity:0; transform:translateX(-30px); } to { opacity:1; transform:translateX(0); } }
+        @keyframes fadeInRight { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
+        @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-12px); } }
+        @keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
+        @keyframes shimmer { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
+        @keyframes glow { 0%,100% { box-shadow: 0 0 20px rgba(0,180,216,0.2); } 50% { box-shadow: 0 0 40px rgba(0,180,216,0.5); } }
+        @keyframes bounceIn { 0% { transform:scale(0.3); opacity:0; } 50% { transform:scale(1.05); } 70% { transform:scale(0.9); } 100% { transform:scale(1); opacity:1; } }
+        @keyframes heartbeat { 0%,100% { transform:scale(1); } 14% { transform:scale(1.15); } 28% { transform:scale(1); } 42% { transform:scale(1.15); } 70% { transform:scale(1); } }
+        .animate-up { animation: fadeInUp 0.7s ease-out both; }
+        .animate-left { animation: fadeInLeft 0.7s ease-out both; }
+        .animate-right { animation: fadeInRight 0.7s ease-out both; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
 
         /* NAV */
         .navbar-custom {
@@ -37,13 +57,14 @@
             display: flex; align-items: center; gap: 8px;
         }
         .navbar-brand-custom span { color: var(--primary); }
+        .navbar-brand-custom i { animation: heartbeat 2s ease-in-out infinite; color: #ef4444; }
         .nav-link-custom {
             color: rgba(255,255,255,0.85) !important;
             font-weight: 500; padding: 8px 14px;
             border-radius: 8px; transition: all 0.2s; text-decoration: none;
             display: inline-flex; align-items: center; gap: 6px;
         }
-        .nav-link-custom:hover { background: rgba(255,255,255,0.12); color: #fff !important; }
+        .nav-link-custom:hover { background: rgba(255,255,255,0.12); color: #fff !important; transform: translateY(-1px); }
         .btn-nav-primary {
             background: var(--primary); color: #fff !important;
             border-radius: 10px; padding: 8px 18px; font-weight: 600;
@@ -53,99 +74,197 @@
         .cart-badge {
             background: #ef4444; color: #fff; border-radius: 50%;
             font-size: 0.7rem; padding: 2px 6px; margin-left: 4px;
+            animation: pulse 2s ease-in-out infinite;
         }
 
         /* HERO */
         .hero {
-            background: linear-gradient(135deg, var(--dark) 0%, #0077b6 60%, var(--secondary) 100%);
-            padding: 110px 0 90px; position: relative; overflow: hidden;
+            background: linear-gradient(135deg, var(--dark) 0%, #0077b6 50%, #00b4d8 80%, #48cae4 100%);
+            padding: 100px 0 80px; position: relative; overflow: hidden;
         }
         .hero::before {
             content: ''; position: absolute; inset: 0;
             background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            pointer-events: none; /* Cho phép click xuyên qua lớp hoa văn SVG */
+            pointer-events: none;
         }
+        /* Floating decorative blobs */
+        .hero-blob {
+            position: absolute; border-radius: 50%; pointer-events: none; opacity: 0.08;
+        }
+        .hero-blob-1 { width:400px; height:400px; background:#90e0ef; top:-100px; right:-100px; animation: float 8s ease-in-out infinite; }
+        .hero-blob-2 { width:250px; height:250px; background:#06d6a0; bottom:-80px; left:-60px; animation: float 6s ease-in-out infinite 1s; }
+        .hero-blob-3 { width:150px; height:150px; background:#fff; top:40%; left:35%; animation: float 10s ease-in-out infinite 2s; }
+
         .hero-badge {
             background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
-            color: #fff; border-radius: 100px; padding: 6px 16px;
-            font-size: 0.85rem; font-weight: 600; display: inline-block; margin-bottom: 20px;
+            color: #fff; border-radius: 100px; padding: 8px 20px;
+            font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;
+            margin-bottom: 20px;
             border: 1px solid rgba(255,255,255,0.25);
+            animation: bounceIn 0.8s ease-out both;
         }
-        .hero h1 { font-size: 3rem; font-weight: 800; color: #fff; line-height: 1.2; }
-        .hero h1 span { color: #90e0ef; }
-        .hero p { color: rgba(255,255,255,0.8); font-size: 1.15rem; max-width: 520px; margin-top: 16px; }
+        .hero-badge .sparkle { animation: pulse 1.5s ease-in-out infinite; }
+        .hero h1 { font-size: 3.2rem; font-weight: 800; color: #fff; line-height: 1.2; }
+        .hero h1 span {
+            background: linear-gradient(135deg, #90e0ef, #06d6a0, #90e0ef);
+            background-size: 200% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+        }
+        .hero p { color: rgba(255,255,255,0.85); font-size: 1.15rem; max-width: 520px; margin-top: 16px; line-height: 1.7; }
         .btn-hero-primary {
-            background: var(--accent); color: var(--dark);
-            border-radius: 12px; padding: 14px 32px; font-weight: 700; font-size: 1rem;
-            border: none; text-decoration: none; transition: all 0.25s; display: inline-block; margin-top: 28px;
-            box-shadow: 0 6px 20px rgba(6,214,160,0.35);
+            background: linear-gradient(135deg, #06d6a0, #00b4d8);
+            color: #fff;
+            border-radius: 14px; padding: 15px 34px; font-weight: 700; font-size: 1rem;
+            border: none; text-decoration: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; margin-top: 28px;
+            box-shadow: 0 6px 24px rgba(6,214,160,0.35);
         }
-        .btn-hero-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(6,214,160,0.45); color: var(--dark); }
+        .btn-hero-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 32px rgba(6,214,160,0.5); color: #fff; }
         .btn-hero-outline {
-            background: transparent; color: #fff;
-            border: 2px solid rgba(255,255,255,0.5);
-            border-radius: 12px; padding: 13px 28px; font-weight: 600; font-size: 1rem;
-            text-decoration: none; transition: all 0.25s; display: inline-block; margin-top: 28px; margin-left: 14px;
+            background: rgba(255,255,255,0.1); color: #fff;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 14px; padding: 14px 28px; font-weight: 600; font-size: 1rem;
+            text-decoration: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; margin-top: 28px; margin-left: 14px;
+            backdrop-filter: blur(8px);
         }
-        .btn-hero-outline:hover { background: rgba(255,255,255,0.15); color: #fff; border-color: #fff; }
+        .btn-hero-outline:hover { background: rgba(255,255,255,0.2); color: #fff; border-color: #fff; transform: translateY(-2px); }
+
+        /* Hero Stats Cards */
         .hero-img-card {
-            background: rgba(255,255,255,0.1); backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 28px;
-            text-align: center;
+            background: rgba(255,255,255,0.08); backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 24px; padding: 24px;
         }
-        .hero-stat { color: #fff; }
-        .hero-stat .num { font-size: 2.4rem; font-weight: 800; color: #90e0ef; }
-        .hero-stat .lbl { font-size: 0.85rem; opacity: 0.75; margin-top: 4px; }
+        .hero-stat-card {
+            background: rgba(255,255,255,0.08); border-radius: 16px; padding: 20px 16px;
+            text-align: center; transition: all 0.3s; border: 1px solid rgba(255,255,255,0.1);
+            position: relative; overflow: hidden;
+        }
+        .hero-stat-card:hover { background: rgba(255,255,255,0.15); transform: translateY(-4px); }
+        .hero-stat-card .stat-emoji { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+        .hero-stat-card .num { font-size: 2rem; font-weight: 800; color: #90e0ef; line-height: 1; }
+        .hero-stat-card .lbl { font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 6px; }
+
+        /* TRUSTED BY STRIP */
+        .trusted-strip {
+            background: #fff; padding: 28px 0; border-bottom: 1px solid #e8f4fd;
+        }
+        .trusted-strip p { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0; }
+        .trust-logo { opacity: 0.4; font-size: 1.6rem; color: var(--dark); transition: all 0.3s; }
+        .trust-logo:hover { opacity: 0.8; transform: scale(1.1); }
+
+        /* HOW IT WORKS */
+        .steps-section { background: linear-gradient(180deg, #f0f9ff, #e0f7fa); }
+        .step-card {
+            background: #fff; border-radius: 24px; padding: 40px 28px; text-align: center;
+            box-shadow: 0 8px 32px rgba(0,119,182,0.08); transition: all 0.3s;
+            border: 1px solid #e8f4fd; position: relative;
+        }
+        .step-card:hover { transform: translateY(-8px); box-shadow: 0 16px 48px rgba(0,119,182,0.15); }
+        .step-number {
+            position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff; font-weight: 800; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,180,216,0.3);
+        }
+        .step-icon {
+            width: 80px; height: 80px; border-radius: 20px; margin: 12px auto 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem;
+        }
+        .step-card h5 { font-weight: 700; color: var(--dark); margin-bottom: 10px; }
+        .step-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+        .step-connector { display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.5rem; }
 
         /* FEATURES */
         .section-title { font-size: 2rem; font-weight: 800; color: var(--dark); }
+        .section-title .emoji { font-style: normal; }
         .section-sub { color: var(--text-muted); font-size: 1.05rem; margin-top: 8px; }
         .feature-card {
             background: var(--card-bg); border-radius: 20px;
             padding: 36px 28px; height: 100%;
             box-shadow: 0 4px 24px rgba(0,119,182,0.07);
-            transition: all 0.25s; border: 1px solid #e8f4fd;
+            transition: all 0.3s; border: 1px solid #e8f4fd;
+            position: relative; overflow: hidden;
         }
-        .feature-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,119,182,0.14); }
+        .feature-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .feature-card:hover { transform: translateY(-8px); box-shadow: 0 16px 48px rgba(0,119,182,0.14); }
+        .feature-card:hover::before { opacity: 1; }
         .feature-icon {
             width: 64px; height: 64px; border-radius: 16px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem; margin-bottom: 20px;
+            font-size: 1.6rem; margin-bottom: 20px; transition: transform 0.3s;
         }
+        .feature-card:hover .feature-icon { transform: scale(1.1) rotate(-5deg); }
         .feature-card h5 { font-size: 1.1rem; font-weight: 700; color: var(--dark); margin-bottom: 10px; }
         .feature-card p { color: var(--text-muted); font-size: 0.93rem; line-height: 1.65; }
 
+        /* TESTIMONIALS */
+        .testimonial-card {
+            background: #fff; border-radius: 20px; padding: 32px; position: relative;
+            box-shadow: 0 4px 24px rgba(0,119,182,0.07); border: 1px solid #e8f4fd;
+            transition: all 0.3s;
+        }
+        .testimonial-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,119,182,0.12); }
+        .testimonial-card .quote-icon { color: var(--primary); font-size: 2rem; opacity: 0.2; position: absolute; top: 20px; right: 24px; }
+        .testimonial-card .stars { color: #fbbf24; font-size: 0.85rem; margin-bottom: 12px; }
+        .testimonial-card .text { color: var(--text); font-size: 0.95rem; line-height: 1.7; font-style: italic; }
+        .testimonial-card .author { margin-top: 18px; display: flex; align-items: center; gap: 12px; }
+        .testimonial-card .avatar {
+            width: 44px; height: 44px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: #fff; font-size: 1.1rem;
+        }
+        .testimonial-card .author-name { font-weight: 700; color: var(--dark); font-size: 0.9rem; }
+        .testimonial-card .author-role { font-size: 0.8rem; color: var(--text-muted); }
+
         /* CTA STRIP */
         .cta-strip {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-            border-radius: 24px; padding: 52px 40px; position: relative; overflow: hidden;
+            background: linear-gradient(135deg, var(--dark), #0077b6, #00b4d8);
+            border-radius: 28px; padding: 56px 44px; position: relative; overflow: hidden;
+        }
+        .cta-strip::before {
+            content: ''; position: absolute; width: 350px; height: 350px; border-radius: 50%;
+            background: rgba(255,255,255,0.05); top: -80px; right: -80px;
         }
         .cta-strip::after {
-            content: ''; position: absolute;
-            width: 300px; height: 300px; border-radius: 50%;
-            background: rgba(255,255,255,0.06);
-            top: -60px; right: -60px;
+            content: ''; position: absolute; width: 200px; height: 200px; border-radius: 50%;
+            background: rgba(6,214,160,0.08); bottom: -60px; left: -40px;
         }
         .cta-strip h2 { font-size: 1.9rem; font-weight: 800; color: #fff; }
-        .cta-strip p { color: rgba(255,255,255,0.8); margin-top: 10px; }
+        .cta-strip p { color: rgba(255,255,255,0.8); margin-top: 10px; font-size: 1.05rem; }
         .btn-cta {
-            background: #fff; color: var(--primary-dark); font-weight: 700;
-            border-radius: 12px; padding: 13px 30px; text-decoration: none;
-            transition: all 0.2s; display: inline-block; margin-top: 24px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, #fff, #f0f9ff); color: var(--primary-dark); font-weight: 700;
+            border-radius: 14px; padding: 14px 32px; text-decoration: none;
+            transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; margin-top: 24px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
-        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); color: var(--primary-dark); }
+        .btn-cta:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 28px rgba(0,0,0,0.2); color: var(--primary-dark); }
+        .cta-emoji { font-size: 5rem; opacity: 0.15; animation: float 4s ease-in-out infinite; }
 
         /* FOOTER */
         .footer {
             background: var(--dark); color: rgba(255,255,255,0.7);
-            padding: 40px 0 24px;
+            padding: 48px 0 24px;
         }
         .footer-brand { font-size: 1.4rem; font-weight: 800; color: #fff; }
         .footer-brand span { color: var(--primary); }
-        .footer a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
-        .footer a:hover { color: var(--primary); }
+        .footer a { color: rgba(255,255,255,0.6); text-decoration: none; transition: all 0.2s; }
+        .footer a:hover { color: var(--primary); transform: translateX(4px); display: inline-block; }
         .footer-divider { border-color: rgba(255,255,255,0.1); margin: 28px 0 18px; }
+        .social-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7);
+            transition: all 0.3s; font-size: 1rem;
+        }
+        .social-icon:hover { background: var(--primary); color: #fff; transform: translateY(-3px); }
     </style>
 </head>
 <body>
@@ -188,40 +307,49 @@
 
 <!-- HERO -->
 <section class="hero">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+    <div class="hero-blob hero-blob-3"></div>
     <div class="container">
         <div class="row align-items-center g-5">
             <div class="col-lg-7">
-                <div class="hero-badge"><i class="fa-solid fa-shield-heart"></i>&nbsp; Nền tảng sức khoẻ số 1 Việt Nam</div>
-                <h1>Chăm sóc sức khoẻ<br><span>thông minh</span> mỗi ngày</h1>
-                <p>Theo dõi BMI • Phân tích sức khoẻ • Tư vấn dinh dưỡng • Mua thực phẩm chức năng chất lượng cao.</p>
-                <div>
+                <div class="hero-badge animate-up">
+                    <span class="sparkle">✨</span> Nền tảng sức khoẻ số 1 Việt Nam
+                </div>
+                <h1 class="animate-up delay-1">Chăm sóc sức khoẻ<br><span>thông minh</span> mỗi ngày</h1>
+                <p class="animate-up delay-2">Theo dõi BMI 📊 • Phân tích sức khoẻ 🩺 • Tư vấn dinh dưỡng 🥗 • Mua thực phẩm chức năng chất lượng cao 💊</p>
+                <div class="animate-up delay-3">
                     <a th:href="@{/my-health}" class="btn-hero-primary"><i class="fa-solid fa-rocket"></i> Bắt đầu ngay</a>
                     <a th:href="@{/products}" class="btn-hero-outline"><i class="fa-solid fa-store"></i> Sản phẩm</a>
                 </div>
             </div>
-            <div class="col-lg-5">
+            <div class="col-lg-5 animate-right delay-2">
                 <div class="hero-img-card">
                     <div class="row g-3">
                         <div class="col-6">
-                            <div class="hero-stat p-3" style="background:rgba(255,255,255,0.08);border-radius:14px">
+                            <div class="hero-stat-card animate-up delay-3">
+                                <span class="stat-emoji">👥</span>
                                 <div class="num">10K+</div>
                                 <div class="lbl">Khách hàng tin dùng</div>
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="hero-stat p-3" style="background:rgba(255,255,255,0.08);border-radius:14px">
+                            <div class="hero-stat-card animate-up delay-4">
+                                <span class="stat-emoji">💊</span>
                                 <div class="num">50+</div>
                                 <div class="lbl">Sản phẩm chất lượng</div>
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="hero-stat p-3" style="background:rgba(255,255,255,0.08);border-radius:14px">
+                            <div class="hero-stat-card animate-up delay-5">
+                                <span class="stat-emoji">⭐</span>
                                 <div class="num">98%</div>
                                 <div class="lbl">Hài lòng dịch vụ</div>
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="hero-stat p-3" style="background:rgba(255,255,255,0.08);border-radius:14px">
+                            <div class="hero-stat-card animate-up delay-6">
+                                <span class="stat-emoji">🕐</span>
                                 <div class="num">24/7</div>
                                 <div class="lbl">Hỗ trợ tư vấn</div>
                             </div>
@@ -233,54 +361,146 @@
     </div>
 </section>
 
-<!-- FEATURES -->
-<section class="py-5 mt-4">
+
+
+<!-- HOW IT WORKS -->
+<section class="steps-section py-5 mt-1">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="section-title">Tính năng nổi bật</h2>
+            <h2 class="section-title"><em class="emoji">🚀</em> Bắt đầu chỉ với 3 bước</h2>
+            <p class="section-sub">Đơn giản, nhanh chóng và hoàn toàn miễn phí</p>
+        </div>
+        <div class="row g-4 align-items-center">
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon" style="background:#e8fdf5;"><span style="font-size:2.5rem;">📝</span></div>
+                    <h5>Đăng ký tài khoản</h5>
+                    <p>Tạo tài khoản miễn phí chỉ trong 30 giây. Không cần thẻ tín dụng!</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon" style="background:#e0f7fa;"><span style="font-size:2.5rem;">📊</span></div>
+                    <h5>Nhập chỉ số sức khoẻ</h5>
+                    <p>Cập nhật cân nặng, chiều cao, huyết áp để AI phân tích riêng cho bạn.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon" style="background:#fef3e0;"><span style="font-size:2.5rem;">🎯</span></div>
+                    <h5>Nhận lộ trình cá nhân</h5>
+                    <p>Hệ thống AI sẽ tự động gợi ý chế độ ăn, tập luyện và sản phẩm phù hợp.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title"><em class="emoji">💎</em> Tính năng nổi bật</h2>
             <p class="section-sub">Tất cả những gì bạn cần để sống khoẻ hơn mỗi ngày</p>
         </div>
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="feature-card">
                     <div class="feature-icon" style="background:#e0f7fa"><i class="fa-solid fa-chart-line" style="color:#0077b6"></i></div>
-                    <h5>Theo dõi sức khoẻ</h5>
+                    <h5>📈 Theo dõi sức khoẻ</h5>
                     <p>Quản lý chỉ số BMI, cân nặng, nhịp tim và nhận phân tích sức khoẻ cá nhân hoá.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="feature-card">
                     <div class="feature-icon" style="background:#e8fdf5"><i class="fa-solid fa-leaf" style="color:#06d6a0"></i></div>
-                    <h5>Tư vấn dinh dưỡng</h5>
+                    <h5>🥗 Tư vấn dinh dưỡng</h5>
                     <p>Gợi ý chế độ ăn uống khoa học, phù hợp với tình trạng cơ thể và mục tiêu của bạn.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="feature-card">
                     <div class="feature-icon" style="background:#fff3e0"><i class="fa-solid fa-capsules" style="color:#f59e0b"></i></div>
-                    <h5>Thực phẩm chức năng</h5>
+                    <h5>💊 Thực phẩm chức năng</h5>
                     <p>Mua sắm các sản phẩm hỗ trợ sức khoẻ chất lượng cao, được kiểm định rõ ràng.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="feature-card">
                     <div class="feature-icon" style="background:#fce4ec"><i class="fa-solid fa-heart-pulse" style="color:#e91e63"></i></div>
-                    <h5>Theo dõi tim mạch</h5>
+                    <h5>❤️ Theo dõi tim mạch</h5>
                     <p>Ghi lại nhịp tim và huyết áp theo thời gian, phát hiện sớm các dấu hiệu bất thường.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="feature-card">
                     <div class="feature-icon" style="background:#ede7f6"><i class="fa-solid fa-brain" style="color:#7c3aed"></i></div>
-                    <h5>Sức khoẻ tinh thần</h5>
+                    <h5>🧠 Sức khoẻ tinh thần</h5>
                     <p>Đánh giá mức độ căng thẳng, hỗ trợ thiền định và cải thiện giấc ngủ hiệu quả.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="feature-card">
                     <div class="feature-icon" style="background:#e3f2fd"><i class="fa-solid fa-user-doctor" style="color:#1565c0"></i></div>
-                    <h5>Tư vấn chuyên gia</h5>
+                    <h5>👨‍⚕️ Tư vấn chuyên gia</h5>
                     <p>Kết nối với các bác sĩ và chuyên gia dinh dưỡng trực tuyến mọi lúc mọi nơi.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="py-5" style="background:linear-gradient(180deg, #fff, #f0f9ff);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title"><em class="emoji">💬</em> Người dùng nói gì?</h2>
+            <p class="section-sub">Hàng nghìn người đã tin tưởng MedCare mỗi ngày</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <i class="fa-solid fa-quote-right quote-icon"></i>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="text">"Mình giảm được 5kg trong 2 tháng nhờ theo dõi BMI và lộ trình AI gợi ý trên MedCare. Ứng dụng rất dễ sử dụng!"</p>
+                    <div class="author">
+                        <div class="avatar" style="background:linear-gradient(135deg,#06d6a0,#00b4d8);">H</div>
+                        <div>
+                            <div class="author-name">Hương Trần</div>
+                            <div class="author-role">Nhân viên văn phòng</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <i class="fa-solid fa-quote-right quote-icon"></i>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="text">"Chức năng quét toa thuốc bằng AI thật sự tiện lợi. Giờ mình không bao giờ quên uống thuốc nữa. 10 điểm!"</p>
+                    <div class="author">
+                        <div class="avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">M</div>
+                        <div>
+                            <div class="author-name">Minh Khang</div>
+                            <div class="author-role">Sinh viên Y khoa</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <i class="fa-solid fa-quote-right quote-icon"></i>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="text">"Sản phẩm Omega-3 trên MedCare Store chất lượng và giá rẻ hơn so với mua ngoài hiệu thuốc. Ship nhanh nữa!"</p>
+                    <div class="author">
+                        <div class="avatar" style="background:linear-gradient(135deg,#7c3aed,#0077b6);">L</div>
+                        <div>
+                            <div class="author-name">Lan Phương</div>
+                            <div class="author-role">Giáo viên tiểu học</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -292,13 +512,13 @@
     <div class="container">
         <div class="cta-strip">
             <div class="row align-items-center">
-                <div class="col-md-8">
+                <div class="col-md-8" style="position:relative;z-index:1;">
                     <h2><i class="fa-solid fa-rocket"></i> Sẵn sàng bắt đầu hành trình khoẻ mạnh?</h2>
-                    <p>Tham gia cùng hàng nghìn người dùng đang sống khoẻ hơn mỗi ngày với MedCare.</p>
+                    <p>Tham gia cùng hàng nghìn người dùng đang sống khoẻ hơn mỗi ngày với MedCare. Hoàn toàn miễn phí! 🎉</p>
                     <a th:href="@{/register}" class="btn-cta"><i class="fa-solid fa-user-plus"></i> Đăng ký miễn phí</a>
                 </div>
-                <div class="col-md-4 text-center d-none d-md-block">
-                    <i class="fa-solid fa-shield-heart" style="font-size:7rem;color:rgba(255,255,255,0.15)"></i>
+                <div class="col-md-4 text-center d-none d-md-flex align-items-center justify-content-center" style="position:relative;z-index:1;">
+                    <span class="cta-emoji">🏥</span>
                 </div>
             </div>
         </div>
@@ -311,40 +531,41 @@
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="footer-brand"><i class="fa-solid fa-heart-pulse"></i> Med<span>Care</span></div>
-                <p style="margin-top:12px;font-size:0.9rem">Nền tảng chăm sóc sức khỏe số 1 Việt Nam. Đồng hành cùng bạn trên con đường sống khoẻ.</p>
+                <p style="margin-top:12px;font-size:0.9rem">Nền tảng chăm sóc sức khỏe số 1 Việt Nam. Đồng hành cùng bạn trên con đường sống khoẻ. 💚</p>
             </div>
             <div class="col-md-2">
                 <h6 style="color:#fff;font-weight:700">Dịch vụ</h6>
                 <ul style="list-style:none;padding:0;margin-top:12px;display:flex;flex-direction:column;gap:8px;font-size:0.9rem">
-                    <li><a th:href="@{/dashboard}">Sức khoẻ</a></li>
-                    <li><a th:href="@{/products}">Sản phẩm</a></li>
-                    <li><a th:href="@{/articles}">Bài viết</a></li>
+                    <li><a th:href="@{/dashboard}">📊 Sức khoẻ</a></li>
+                    <li><a th:href="@{/products}">💊 Sản phẩm</a></li>
+                    <li><a th:href="@{/articles}">📰 Bài viết</a></li>
                 </ul>
             </div>
             <div class="col-md-2">
                 <h6 style="color:#fff;font-weight:700">Tài khoản</h6>
                 <ul style="list-style:none;padding:0;margin-top:12px;display:flex;flex-direction:column;gap:8px;font-size:0.9rem">
-                    <li><a th:href="@{/login}">Đăng nhập</a></li>
-                    <li><a th:href="@{/register}">Đăng ký</a></li>
-                    <li><a th:href="@{/profile}">Hồ sơ</a></li>
+                    <li><a th:href="@{/login}">🔑 Đăng nhập</a></li>
+                    <li><a th:href="@{/register}">📝 Đăng ký</a></li>
+                    <li><a th:href="@{/profile}">👤 Hồ sơ</a></li>
                 </ul>
             </div>
             <div class="col-md-4">
                 <h6 style="color:#fff;font-weight:700">Liên hệ</h6>
-                <p style="margin-top:12px;font-size:0.9rem">
-                    <i class="fa-solid fa-envelope"></i> support@medcare.vn<br>
-                    <i class="fa-solid fa-phone"></i> 1800 0000<br>
-                    <i class="fa-solid fa-location-dot"></i> Thành phố Hồ Chí Minh, Việt Nam
+                <p style="margin-top:12px;font-size:0.9rem;line-height:2;">
+                    📧 support@medcare.vn<br>
+                    📞 1800 0000<br>
+                    📍 Thành phố Hồ Chí Minh, Việt Nam
                 </p>
             </div>
         </div>
         <hr class="footer-divider">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <p style="font-size:0.85rem;margin:0">© 2026 MedCare. Bảo lưu mọi quyền.</p>
-            <div style="display:flex;gap:14px">
-                <a href="#" style="font-size:1.1rem"><i class="fab fa-facebook"></i></a>
-                <a href="#" style="font-size:1.1rem"><i class="fab fa-instagram"></i></a>
-                <a href="#" style="font-size:1.1rem"><i class="fab fa-youtube"></i></a>
+            <p style="font-size:0.85rem;margin:0">© 2026 MedCare. Bảo lưu mọi quyền. Made with ❤️</p>
+            <div style="display:flex;gap:10px">
+                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
             </div>
         </div>
     </div>
